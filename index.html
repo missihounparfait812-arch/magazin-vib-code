@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPORT VIBE | Le Magazine d'Actualités Sportives en Temps Réel</title>
+  <meta name="description" content="Toutes les actualités du sport en direct : Football, Basketball, Formule 1, Tennis, MMA et Athlétisme. Flashs infos, résultats et publications en temps réel.">
+  <meta name="theme-color" content="#07090e">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       TOP FLASH INFOS MARQUEE (FIL ROUGE EN CONTINU)
+       ========================================================================== -->
+  <aside class="ticker-wrap" aria-label="Flash Infos en continu">
+    <div class="container ticker-content">
+      <div class="ticker-label">
+        <span class="live-pulse"></span>
+        Flash Infos
+      </div>
+      <div class="ticker-marquee">
+        <div class="ticker-items" id="tickerItems">
+          <!-- Dynamically populated by app.js -->
+        </div>
+      </div>
+      <button class="btn btn-outline" style="padding: 4px 10px; font-size: 0.75rem; white-space: nowrap;" onclick="triggerSimulatedFlash()" title="Simuler l'arrivée d'une nouvelle dépêche sportive">
+        ⚡ Simuler une alerte
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       STICKY NAVIGATION BAR
+       ========================================================================== -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <!-- Brand Logo -->
+      <a href="#" class="brand-logo" title="SPORT VIBE - Accueil">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div class="brand-text">
+          SPORT<span>VIBE</span>
+          <span class="brand-tag">MAG</span>
+        </div>
+      </a>
+
+      <!-- Instant Search Bar -->
+      <div class="search-box">
+        <span class="search-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher une actualité, joueur, équipe, discipline..." aria-label="Rechercher des actualités sportives">
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="nav-actions">
+        <button id="liveModeToggle" class="btn btn-live-toggle active" onclick="toggleLiveMode()" title="Activer ou désactiver les alertes automatiques en direct">
+          <span class="live-pulse"></span>
+          Direct Actif
+        </button>
+
+        <button class="btn btn-primary" onclick="openPublishModal()" id="btnOpenPublish">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Publier un flash
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       CATEGORY FILTER BAR
+       ========================================================================== -->
+  <nav class="categories-nav" aria-label="Catégories sportives">
+    <div class="container">
+      <ul class="category-list">
+        <li>
+          <button class="cat-btn active" data-category="all">
+            🔥 Tous les sports <span class="cat-badge-count" id="count-all">0</span>
+          </button>
+        </li>
+        <li>
+          <button class="cat-btn" data-category="football">
+            ⚽ Football <span class="cat-badge-count" id="count-football">0</span>
+          </button>
+        </li>
+        <li>
+          <button class="cat-btn" data-category="basketball">
+            🏀 Basketball <span class="cat-badge-count" id="count-basketball">0</span>
+          </button>
+        </li>
+        <li>
+          <button class="cat-btn" data-category="f1">
+            🏎️ Formule 1 <span class="cat-badge-count" id="count-f1">0</span>
+          </button>
+        </li>
+        <li>
+          <button class="cat-btn" data-category="tennis">
+            🎾 Tennis <span class="cat-badge-count" id="count-tennis">0</span>
+          </button>
+        </li>
+        <li>
+          <button class="cat-btn" data-category="mma">
+            🥊 Combat & MMA <span class="cat-badge-count" id="count-mma">0</span>
+          </button>
+        </li>
+        <li>
+          <button class="cat-btn" data-category="athletisme">
+            🏃 Athlétisme <span class="cat-badge-count" id="count-athletisme">0</span>
+          </button>
+        </li>
+        <li>
+          <button class="cat-btn" data-category="bookmarks">
+            ★ Mes Favoris <span class="cat-badge-count" id="count-bookmarks">0</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- ==========================================================================
+         HERO SECTION: À LA UNE & TENDANCES DU MOMENT
+         ========================================================================== -->
+    <section class="hero-section" aria-label="À la une">
+      <div class="hero-grid">
+        <!-- Main Featured Headline -->
+        <article class="hero-main-card" onclick="openReaderModal('art-1')">
+          <div class="hero-img-wrap">
+            <img src="assets/images/football.jpg" alt="Ligue des Champions football choc sous la pluie">
+          </div>
+          <div class="hero-overlay"></div>
+          <div class="hero-content">
+            <span class="tag-badge football">
+              ⚡ À LA UNE • LIGUE DES CHAMPIONS
+            </span>
+            <h1 class="hero-title">
+              Ligue des Champions : Fin de match d'anthologie et qualification héroïque sous le déluge
+            </h1>
+            <p class="hero-description">
+              Au terme d'un suspense insoutenable sous une pluie battante, une frappe téléguidée à la 94e minute envoie les siens vers le dernier carré européen dans une ambiance survoltée.
+            </p>
+            <div class="article-meta">
+              <span class="meta-author">
+                <span class="author-avatar">ML</span>
+                Marc Lefèvre
+              </span>
+              <span class="meta-dot">●</span>
+              <span>Il y a 12 min</span>
+              <span class="meta-dot">●</span>
+              <span>Lecture 3 min</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Secondary Highlights -->
+        <div class="hero-side-grid">
+          <!-- Mini Card 1: Basketball -->
+          <article class="hero-mini-card" onclick="openReaderModal('art-2')">
+            <div class="hero-img-wrap">
+              <img src="assets/images/basketball.jpg" alt="Dunk spectaculaire en finale NBA">
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+              <span class="tag-badge basketball">NBA FINALS</span>
+              <h2 class="hero-mini-title">
+                NBA Finals : Dunks stratosphériques et exploit historique au buzzer dans un Game 7
+              </h2>
+              <div class="article-meta">
+                <span>Thomas Miller</span>
+                <span class="meta-dot">●</span>
+                <span>Il y a 45 min</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Mini Card 2: F1 -->
+          <article class="hero-mini-card" onclick="openReaderModal('art-3')">
+            <div class="hero-img-wrap">
+              <img src="assets/images/formula1.jpg" alt="Formule 1 Grand Prix nocturne">
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+              <span class="tag-badge f1">FORMULE 1</span>
+              <h2 class="hero-mini-title">
+                Grand Prix de Nuit : Pole position sous la pluie battante et étincelles à Tokyo
+              </h2>
+              <div class="article-meta">
+                <span>Elena Rostova</span>
+                <span class="meta-dot">●</span>
+                <span>Il y a 2h</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         LIVE MATCH CENTER WIDGET (SCORES EN DIRECT)
+         ========================================================================== -->
+    <section class="live-scores-strip" aria-label="Scores des matches en direct">
+      <div class="scores-title">
+        <span>🔴 En Direct</span>
+        <span style="font-size: 0.68rem; color: var(--text-dim); font-weight: normal;">Match Center</span>
+      </div>
+
+      <div class="match-item">
+        <span class="match-time">89'</span>
+        <span class="match-teams">Real Madrid vs Manchester City</span>
+        <span class="match-score">2 - 1</span>
+      </div>
+
+      <div class="match-item">
+        <span class="match-time">Q4 0:42</span>
+        <span class="match-teams">LA Lakers vs Boston Celtics</span>
+        <span class="match-score">108 - 104</span>
+      </div>
+
+      <div class="match-item">
+        <span class="match-time">T 42/57</span>
+        <span class="match-teams">GP F1 : Leclerc vs Verstappen</span>
+        <span class="match-score">+0.428s</span>
+      </div>
+
+      <div class="match-item">
+        <span class="match-time">Set 4</span>
+        <span class="match-teams">C. Alcaraz vs J. Sinner</span>
+        <span class="match-score">6-4, 3-6, 7-6</span>
+      </div>
+    </section>
+
+    <!-- ==========================================================================
+         MAIN FEED SECTION (ARTICLES GRID + SIDEBAR)
+         ========================================================================== -->
+    <div class="feed-header">
+      <div class="feed-title-wrap">
+        <h2 class="section-title">Actualités Sportives en Continu</h2>
+        <span class="live-badge-glow">
+          <span class="live-pulse"></span>
+          Flux en direct
+        </span>
+      </div>
+
+      <div class="feed-sort-wrap">
+        <label for="sortSelect" style="font-size: 0.82rem; color: var(--text-dim);">Trier par :</label>
+        <select id="sortSelect" class="sort-select" aria-label="Trier les articles">
+          <option value="recent">Plus récents d'abord</option>
+          <option value="popular">Plus populaires (J'aime)</option>
+          <option value="comments">Plus commentés</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="main-layout">
+      <!-- Dynamic Articles Grid -->
+      <section class="articles-grid" id="articlesGrid" aria-label="Liste des articles">
+        <!-- Dynamically rendered by app.js -->
+      </section>
+
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <!-- Call to action: Quick Publish -->
+        <div class="quick-publish-box">
+          <div style="font-size: 2rem; margin-bottom: 8px;">📢</div>
+          <h3>Vous avez une actualité ?</h3>
+          <p>Publiez vos flashs sportifs, analyses, scores ou informations mercato en temps réel sur la plateforme.</p>
+          <button class="btn btn-primary" style="width: 100%;" onclick="openPublishModal()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Publier une actualité
+          </button>
+        </div>
+
+        <!-- Trending Widget -->
+        <div class="widget-card">
+          <div class="widget-header">
+            <h3 class="widget-title">
+              <span class="widget-title-icon">🔥</span> Top Tendances
+            </h3>
+            <span style="font-size: 0.75rem; color: var(--text-dim);">Dernières 24h</span>
+          </div>
+
+          <div class="trending-list">
+            <div class="trending-item" onclick="openReaderModal('art-1')">
+              <div class="trending-num">01</div>
+              <div class="trending-info">
+                <h4>Choc en Ligue des Champions : Fin de match irrespirable</h4>
+                <div class="trending-meta">Football • 342 réactions</div>
+              </div>
+            </div>
+
+            <div class="trending-item" onclick="openReaderModal('art-6')">
+              <div class="trending-num">02</div>
+              <div class="trending-info">
+                <h4>Nouveau record du monde pulvérisé sur 100m en 9.56s</h4>
+                <div class="trending-meta">Athlétisme • 789 réactions</div>
+              </div>
+            </div>
+
+            <div class="trending-item" onclick="openReaderModal('art-5')">
+              <div class="trending-num">03</div>
+              <div class="trending-info">
+                <h4>UFC : KO foudroyant dans l'Octogone au 3ème round</h4>
+                <div class="trending-meta">Combat / MMA • 620 réactions</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Newsletter Subscription Widget -->
+        <div class="widget-card newsletter-widget">
+          <div class="widget-header">
+            <h3 class="widget-title">
+              <span>📩</span> Alertes SportVibe
+            </h3>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 14px;">
+            Recevez chaque matin l'essentiel des actualités, résultats et transferts directement dans votre boîte mail.
+          </p>
+          <form onsubmit="handleNewsletter(event)">
+            <input type="email" id="newsletterEmail" placeholder="Votre adresse email..." required>
+            <button type="submit" class="btn btn-outline" style="width: 100%;">
+              S'abonner aux flashs
+            </button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       MODAL: PUBLIER UNE ACTUALITÉ SPORTIVE
+       ========================================================================== -->
+  <div class="modal-overlay" id="publishModal" role="dialog" aria-modal="true" aria-labelledby="modalPublishTitle">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h2 id="modalPublishTitle">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" color="var(--accent-red)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          Publier une actualité sportive
+        </h2>
+        <button class="modal-close-btn" onclick="closePublishModal()" aria-label="Fermer la boîte de dialogue">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <form id="publishForm">
+          <!-- Title -->
+          <div class="form-group">
+            <label class="form-label" for="pubTitle">Titre de l'actualité *</label>
+            <input type="text" id="pubTitle" class="form-input" placeholder="Ex: Transfert choc, victoire au buzzer, record battu..." required>
+          </div>
+
+          <!-- Category & Tag -->
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="pubCategory">Discipline sportive *</label>
+              <select id="pubCategory" class="form-select" required>
+                <option value="football">⚽ Football</option>
+                <option value="basketball">🏀 Basketball</option>
+                <option value="f1">🏎️ Formule 1</option>
+                <option value="tennis">🎾 Tennis</option>
+                <option value="mma">🥊 Combat / MMA</option>
+                <option value="athletisme">🏃 Athlétisme</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="pubTag">Badge / Type d'actualité</label>
+              <input type="text" id="pubTag" class="form-input" placeholder="Ex: Flash Info, Mercato, Résultat, Exclusif">
+            </div>
+          </div>
+
+          <!-- Visual / Image Selection -->
+          <div class="form-group">
+            <label class="form-label">Sélectionner un visuel haute définition</label>
+            <div class="preset-images-grid">
+              <div class="preset-img-option selected" onclick="selectPresetImage(this, 'assets/images/football.jpg')">
+                <img src="assets/images/football.jpg" alt="Preset Football">
+                <div class="preset-img-label">Football</div>
+              </div>
+              <div class="preset-img-option" onclick="selectPresetImage(this, 'assets/images/basketball.jpg')">
+                <img src="assets/images/basketball.jpg" alt="Preset Basket">
+                <div class="preset-img-label">Basketball</div>
+              </div>
+              <div class="preset-img-option" onclick="selectPresetImage(this, 'assets/images/formula1.jpg')">
+                <img src="assets/images/formula1.jpg" alt="Preset F1">
+                <div class="preset-img-label">Formule 1</div>
+              </div>
+              <div class="preset-img-option" onclick="selectPresetImage(this, 'assets/images/tennis.jpg')">
+                <img src="assets/images/tennis.jpg" alt="Preset Tennis">
+                <div class="preset-img-label">Tennis</div>
+              </div>
+              <div class="preset-img-option" onclick="selectPresetImage(this, 'assets/images/mma.jpg')">
+                <img src="assets/images/mma.jpg" alt="Preset MMA">
+                <div class="preset-img-label">MMA / Combat</div>
+              </div>
+              <div class="preset-img-option" onclick="selectPresetImage(this, 'assets/images/athletics.jpg')">
+                <img src="assets/images/athletics.jpg" alt="Preset Athlétisme">
+                <div class="preset-img-label">Athlétisme</div>
+              </div>
+            </div>
+            <input type="hidden" id="pubImageInput" value="assets/images/football.jpg">
+          </div>
+
+          <!-- Excerpt -->
+          <div class="form-group">
+            <label class="form-label" for="pubExcerpt">Résumé accrocheur (Apparaît dans le fil) *</label>
+            <input type="text" id="pubExcerpt" class="form-input" placeholder="Courte synthèse en 1 ou 2 phrases percutantes..." required>
+          </div>
+
+          <!-- Full Content -->
+          <div class="form-group">
+            <label class="form-label" for="pubContent">Article complet & Développements *</label>
+            <textarea id="pubContent" class="form-textarea" placeholder="Rédigez les détails du match, déclarations, analyses tactiques..." required></textarea>
+          </div>
+
+          <!-- Author -->
+          <div class="form-group">
+            <label class="form-label" for="pubAuthor">Auteur / Journaliste</label>
+            <input type="text" id="pubAuthor" class="form-input" placeholder="Votre nom ou Rédaction SportVibe">
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px;">
+            <button type="button" class="btn btn-outline" onclick="closePublishModal()">Annuler</button>
+            <button type="submit" class="btn btn-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              Publier l'actualité immédiatement
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: ARTICLE FULL READER
+       ========================================================================== -->
+  <div class="modal-overlay" id="readerModal" role="dialog" aria-modal="true" aria-label="Lecture de l'article">
+    <div class="modal-container" style="max-width: 780px;">
+      <div class="modal-header">
+        <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent-neon); text-transform: uppercase;">
+          ● Flash Dépêche SportVibe
+        </span>
+        <button class="modal-close-btn" onclick="closeReaderModal()" aria-label="Fermer la lecture">✕</button>
+      </div>
+
+      <div id="readerContent">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       TOAST NOTIFICATIONS CONTAINER (ALERTES INSTANTANÉES)
+       ========================================================================== -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="brand-text">
+            SPORT<span>VIBE</span>
+            <span class="brand-tag">MAG</span>
+          </div>
+          <p>
+            Le média sportif nouvelle génération en direct. Couverture en temps réel des plus grands championnats et compétitions internationales.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Disciplines</h4>
+          <ul class="footer-links">
+            <li><a href="#" onclick="document.querySelector('[data-category=football]').click(); return false;">Football & LDC</a></li>
+            <li><a href="#" onclick="document.querySelector('[data-category=basketball]').click(); return false;">NBA & Euroligue</a></li>
+            <li><a href="#" onclick="document.querySelector('[data-category=f1]').click(); return false;">Formule 1</a></li>
+            <li><a href="#" onclick="document.querySelector('[data-category=tennis]').click(); return false;">Grands Chelems</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Direct & Live</h4>
+          <ul class="footer-links">
+            <li><a href="#" onclick="triggerSimulatedFlash(); return false;">Flashs d'alerte</a></li>
+            <li><a href="#" onclick="openPublishModal(); return false;">Espace Publication</a></li>
+            <li><a href="#" onclick="document.querySelector('[data-category=bookmarks]').click(); return false;">Mes Favoris</a></li>
+            <li><a href="#">Match Center</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Sport Vibe Media</h4>
+          <ul class="footer-links">
+            <li><a href="#">À propos de la rédaction</a></li>
+            <li><a href="#">Charte déontologique</a></li>
+            <li><a href="#">Contact & Publicité</a></li>
+            <li><a href="#">Mentions légales</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>© 2026 SPORT VIBE MEDIA INC. Tous droits réservés.</div>
+        <div style="display: flex; gap: 20px;">
+          <span>Flux RSS en direct</span>
+          <span>Confidentialité</span>
+          <span>Paramètres des cookies</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
